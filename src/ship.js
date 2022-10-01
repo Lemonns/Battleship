@@ -16,11 +16,11 @@ export const Ship = (size) => {
 
     //Checks to see if ship is sunk; If all elements in array are true, it is sunk
     const isSunk = () => {
-        const status = shipData.every(ele => {
-            if (ele === shipData[0] && isInteger(ele) === false) return true;
-            return false;
-        })
-        return status;
+        let status = true
+        for (let i = 0; i < shipSize; i++) {
+            if (shipData[i] != "hit") status=false
+        }
+        return status
     }
 
     return { shipSize, shipData, hit, isSunk };
