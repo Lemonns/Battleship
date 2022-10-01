@@ -17,13 +17,19 @@ export const Gameboard = () => {
     const canPlace = (loc1, loc2, size, direction) => {
         if (direction === "horizontal") {
             for (let i = 0; i < size; i++) {
-                if (board[loc1][loc2+i] != null) return false
+                if (board[loc1][loc2+i] != null) {
+                    console.log(`Ship already in the location ${loc1}, ${loc2}`)
+                    return false
+                }
             }
             return true
         }
         if (direction === "vertical") {
             for (let i = 0; i < size; i++) {
-                if (board[loc1+i][loc2] != null) return false
+                if (board[loc1+i][loc2] != null){
+                    console.log("Ship already in the location")
+                    return false
+                } 
             }
             return true
         }
@@ -31,6 +37,7 @@ export const Gameboard = () => {
 
     //Wrap canPlace() around entire placeship logic
     const placeShip = (loc1, loc2, size, direction) => {
+        
         let ship = Ship(size);
         let shipPos = 0
         if (direction === "horizontal") {
@@ -40,6 +47,8 @@ export const Gameboard = () => {
                     board[loc1][loc2+i] = {ship, shipPos};
                     shipPos++
                 }
+            }else {
+                return false;
             }
         }
         
@@ -50,6 +59,8 @@ export const Gameboard = () => {
                     board[loc1+i][loc2] = {ship, shipPos};
                     shipPos++
                 }
+            }else {
+                return false;
             }
 
         }
@@ -60,7 +71,7 @@ export const Gameboard = () => {
     const receiveAttack = (loc1, loc2) => {
         if (board[loc1][loc2] === null) {
             //console.log("Miss")
-            //board[loc1][loc2] = "miss"  Could maybe do this
+            //board[loc1][loc2] = "miss"
             //attack misses; record location missed somehow
             missedShots.push([loc1, loc2])
             return board[loc1][loc2]
@@ -97,22 +108,9 @@ export const Gameboard = () => {
     return {board, placeShip, canPlace, receiveAttack, isSunk, allSunk};
 }
 
-let bor = Gameboard()
-bor.placeShip(0, 4, 3, "horizontal")
-//bor.placeShip(0, 1, 4, "horizontal")
-console.log(bor.board)
-//bor.placeShip(1, 0, 4, "horizontal")
-bor.placeShip(5, 1, 4, "vertical")
-//bor.receiveAttack(4, 5)
-
-
-bor.receiveAttack(0, 4)
-bor.receiveAttack(0, 7)
-bor.receiveAttack(0, 6)
-bor.receiveAttack(0, 5)
-
-
-bor.receiveAttack(5, 1)
-bor.receiveAttack(5, 1)
-
-console.log(bor.allSunk(bor.board))
+//0, 4
+//let bor = Gameboard()
+//console.log(bor.board)
+//bor.placeShip(0, 4, 3, "horizontal")
+//bor.placeShip(0, 7, 3, "vertical")
+//bor.placeShip(3, 7, 3, "vertical")

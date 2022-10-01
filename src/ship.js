@@ -1,5 +1,14 @@
 import { isInteger } from "lodash";
 
+const NUMBER_OF_SHIPS = 5;
+
+//Types of ships; 
+const CARRIER = 5;
+const BATTLESHIP = 4;
+const CRUISER = 3;
+const SUBMARINE = 3;
+const DESTROYER = 2;
+
 export const Ship = (size) => {
 
     //Length of array/ship
