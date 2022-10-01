@@ -15,7 +15,7 @@ export const Bot = () => {
     const fillBoardShips = (() => {
         for (let i = 0; i < NUMBER_OF_SHIPS; i++) {
             while (i < NUMBER_OF_SHIPS) {
-                if (board.placeShip(randomLoc(), randomLoc(), SIZES[i], "vertical") === false) {
+                if (board.placeShip(randomLoc(), randomLoc(), SIZES[i], DIRECTION[Math.floor(Math.random() * 2)]) === false) {
                     continue
                 }else{
                     break
