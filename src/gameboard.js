@@ -44,7 +44,7 @@ export const Gameboard = () => {
             if ((loc2 + ship.shipSize) > 10) return false;
             if (canPlace(loc1, loc2, size, direction)) {
                 for (let i = 0; i < ship.shipSize; i++) {
-                    board[loc1][loc2+i] = {ship, shipPos};
+                    board[loc1][loc2+i] = {ship, shipPos, boardLocation:[loc1, loc2+i]}; //maybe return an issunk boolean
                     shipPos++
                 }
             }else {
@@ -56,7 +56,7 @@ export const Gameboard = () => {
             if ((loc1 + ship.shipSize) > 10) return false;
             if (canPlace(loc1, loc2, size, direction)) {
                 for (let i = 0; i < ship.shipSize; i++) {
-                    board[loc1+i][loc2] = {ship, shipPos};
+                    board[loc1+i][loc2] = {ship, shipPos, location:[loc1+i, loc2]}; //maybe return an issunk boolean
                     shipPos++
                 }
             }else {
@@ -69,21 +69,22 @@ export const Gameboard = () => {
 
     
     const receiveAttack = (loc1, loc2) => {
+        if (board[loc1][loc2] === "miss") return false;
+
         if (board[loc1][loc2] === null) {
-            //console.log("Miss")
-            //board[loc1][loc2] = "miss"
-            //attack misses; record location missed somehow
+            board[loc1][loc2] = "miss"
             missedShots.push([loc1, loc2])
             return board[loc1][loc2]
         }
+
+        //checks if user already attacked this ship position
         if (typeof board[loc1][loc2] === 'object' && board[loc1][loc2].ship.shipData[board[loc1][loc2].shipPos] === "hit") {
-            //console.log("Already hit")
-            //Don't allow user to click here bc they already attacked at this location
+            console.log("Already attacked here")
             return false
         }
         if (typeof board[loc1][loc2] === 'object') {
             board[loc1][loc2].ship.hit(board[loc1][loc2].shipPos)
-            return
+            return true
         }
     }
 
