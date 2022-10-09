@@ -4,7 +4,9 @@ const SIZE = 10;
 export const Gameboard = () => {
     let board = [];
     let missedShots = [];
-
+    let shipSizes = [5, 4, 3, 3, 2];
+    let shipSizeTracker = 0;
+    
     const initializeBoard = (() => {
         for (let i = 0; i < SIZE; i++) {
             board[i] = [];
@@ -36,35 +38,52 @@ export const Gameboard = () => {
     }
 
     //Wrap canPlace() around entire placeship logic
-    const placeShip = (loc1, loc2, size, direction) => {
-        
-        let ship = Ship(size);
-        let shipPos = 0
-        if (direction === "horizontal") {
-            if ((loc2 + ship.shipSize) > 10) return false;
-            if (canPlace(loc1, loc2, size, direction)) {
-                for (let i = 0; i < ship.shipSize; i++) {
-                    board[loc1][loc2+i] = {ship, shipPos, boardLocation:[loc1, loc2+i]}; //maybe return an issunk boolean
-                    shipPos++
+    const placeShip = (loc1, loc2, direction, player=null) => {
+        //GAME HAS STARTED IF SHIPSIZETRACKER IS >= 5
+        if (shipSizeTracker < 5) {
+            let ship = Ship(shipSizes[shipSizeTracker]);
+            let shipPos = 0
+            
+            if (direction === "horizontal") {
+                if ((loc2 + ship.shipSize) > 10) return false;
+                if (canPlace(loc1, loc2, shipSizes[shipSizeTracker], direction)) {
+                    if (shipSizeTracker === 4 && player != null) player.setGameStarted();
+                    for (let i = 0; i < ship.shipSize; i++) {
+                        board[loc1][loc2+i] = {ship, shipPos, boardLocation:[loc1, loc2+i]}; //maybe return an issunk boolean
+                        shipPos++
+                    }
+                    shipSizeTracker++
+                    if (player != null) player.tracker+=1
+                
+                }else {
+                    return false;
                 }
-            }else {
+            }
+        
+            if (direction === "vertical") {
+                if ((loc1 + ship.shipSize) > 10) return false;
+                if (canPlace(loc1, loc2, shipSizes[shipSizeTracker], direction)) {
+                    if (shipSizeTracker === 4 && player != null) player.setGameStarted();
+                    for (let i = 0; i < ship.shipSize; i++) {
+                        board[loc1+i][loc2] = {ship, shipPos, location:[loc1+i, loc2]}; //maybe return an issunk boolean
+                        shipPos++
+                    }
+                    shipSizeTracker++
+                    if (player != null) player.tracker+=1
+                
+                }else {
                 return false;
+                }
             }
         }
         
-        if (direction === "vertical") {
-            if ((loc1 + ship.shipSize) > 10) return false;
-            if (canPlace(loc1, loc2, size, direction)) {
-                for (let i = 0; i < ship.shipSize; i++) {
-                    board[loc1+i][loc2] = {ship, shipPos, location:[loc1+i, loc2]}; //maybe return an issunk boolean
-                    shipPos++
-                }
-            }else {
-                return false;
-            }
-
+        else {
+            console.log("False")
+            console.log(player.gameStarted)
+            player.setGameStarted()
+            console.log(player.gameStarted)
+            return false
         }
-        
     }
 
     
@@ -74,7 +93,8 @@ export const Gameboard = () => {
         if (board[loc1][loc2] === null) {
             board[loc1][loc2] = "miss"
             missedShots.push([loc1, loc2])
-            return board[loc1][loc2]
+            return true
+            //return board[loc1][loc2]
         }
 
         //checks if user already attacked this ship position
@@ -89,24 +109,24 @@ export const Gameboard = () => {
     }
 
     const isSunk = (loc1, loc2) => {
-        //console.log(board[loc1][loc2])
+        if (board[loc1][loc2] === null || board[loc1][loc2] === "miss") return false
         return board[loc1][loc2].ship.isSunk() === true ? true : false
     }
 
-    const allSunk = (board) => {
+    const allSunk = (board, player=null) => {
         for (let i = 0; i < SIZE; i++) {
             for (let j = 0; j < SIZE; j++) {
+                if (player != null) {
+                    if (player.gameStarted === false) return false
+                }
+                if (board[i][j] === "miss") continue;
                 if (board[i][j] != null && board[i][j].ship.isSunk() === false) return false;
             }
         }
         return true;
     }
 
-
-
-
-
-    return {board, placeShip, canPlace, receiveAttack, isSunk, allSunk};
+    return {board, placeShip, canPlace, receiveAttack, isSunk, allSunk, shipSizes, shipSizeTracker};
 }
 
 //0, 4
