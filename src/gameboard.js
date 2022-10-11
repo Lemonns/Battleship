@@ -20,7 +20,6 @@ export const Gameboard = () => {
         if (direction === "horizontal") {
             for (let i = 0; i < size; i++) {
                 if (board[loc1][loc2+i] != null) {
-                    console.log(`Ship already in the location ${loc1}, ${loc2}`)
                     return false
                 }
             }
@@ -29,7 +28,6 @@ export const Gameboard = () => {
         if (direction === "vertical") {
             for (let i = 0; i < size; i++) {
                 if (board[loc1+i][loc2] != null){
-                    console.log("Ship already in the location")
                     return false
                 } 
             }
@@ -78,10 +76,7 @@ export const Gameboard = () => {
         }
         
         else {
-            console.log("False")
-            console.log(player.gameStarted)
             player.setGameStarted()
-            console.log(player.gameStarted)
             return false
         }
     }
@@ -98,10 +93,7 @@ export const Gameboard = () => {
         }
 
         //checks if user already attacked this ship position
-        if (typeof board[loc1][loc2] === 'object' && board[loc1][loc2].ship.shipData[board[loc1][loc2].shipPos] === "hit") {
-            console.log("Already attacked here")
-            return false
-        }
+        if (typeof board[loc1][loc2] === 'object' && board[loc1][loc2].ship.shipData[board[loc1][loc2].shipPos] === "hit") return false
         if (typeof board[loc1][loc2] === 'object') {
             board[loc1][loc2].ship.hit(board[loc1][loc2].shipPos)
             return true
@@ -128,10 +120,3 @@ export const Gameboard = () => {
 
     return {board, placeShip, canPlace, receiveAttack, isSunk, allSunk, shipSizes, shipSizeTracker};
 }
-
-//0, 4
-//let bor = Gameboard()
-//console.log(bor.board)
-//bor.placeShip(0, 4, 3, "horizontal")
-//bor.placeShip(0, 7, 3, "vertical")
-//bor.placeShip(3, 7, 3, "vertical")

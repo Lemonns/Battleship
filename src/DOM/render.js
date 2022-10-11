@@ -1,5 +1,5 @@
 import {gameLoop} from '../game'
-//winner-display <-- winner display
+
 const WIDTH = 10;
 const HEIGHT = 10;
 const DIMENSIONS = WIDTH * HEIGHT;
@@ -24,12 +24,12 @@ export function addCoordinates(elements, playerName) {
         }
     }
 }
+
+//clears game boards
 export function clearGame() {
-    //document.querySelector(".board-area").innerHTML = ""
     document.querySelector(".bot-ai").innerHTML = ""
     document.querySelector(".player").innerHTML = ""
 }
-
 
 //renders all info from the two-dimensional board array (misses, hits, ships, and if ship is sunk)
 export function renderBoardData(board, playerName) {
@@ -46,7 +46,8 @@ export function renderBoardData(board, playerName) {
                 document.querySelector(`[${playerName}="${i} ${j}"]`).setAttribute('id', 'hit-ship')
             }
             else {
-                document.querySelector(`[${playerName}="${i} ${j}"]`).setAttribute('id', 'alive-ship')
+                if (playerName == "ai-coords") document.querySelector(`[${playerName}="${i} ${j}"]`).setAttribute('id', 'alive-ship-ai');
+                else document.querySelector(`[${playerName}="${i} ${j}"]`).setAttribute('id', 'alive-ship');
             }
         }
     }
@@ -54,8 +55,7 @@ export function renderBoardData(board, playerName) {
 }
 
 //adds event listeners to player board that enables the placing of ships
-//passes array of all grid items as argument\
-//this will be for placing ships
+//checks if all ships are sunk
 export function addPlayerEventListeners(player, playerGridItems) {
     playerGridItems.forEach(item => {
         item.addEventListener('click', (e) => {
@@ -78,20 +78,15 @@ export function rotateListener(player) {
     const rotateButton = document.querySelector(".rotate")
     rotateButton.addEventListener('click', () => {
         player.rotateTracker+=1
-        //console.log(player.rotateOption(player.rotateTracker))
     })
 }
  
 
-
+//add event listeners to bot grid items
+//lets player attack board
 export function addBotBoardListeners(bot, botGridItems, player=null) {
     botGridItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            console.log(bot)
-            if (player.board.allSunk(player.board.board, player) || bot.board.allSunk(bot.board.board)) {
-                gameLoop()
-                return
-            }
             let coordSet = e.target.getAttribute('ai-coords').split(' ').map(Number)
             console.log(player.gameStarted)
             if (player.turn) {
@@ -111,21 +106,22 @@ export function addBotBoardListeners(bot, botGridItems, player=null) {
     })
 }
 
+//Displayes winner for 5 seconds
+//if there isn't one, returns false
+export function displayWinner(player, botBoard) {
+    
+    if(player.board.allSunk(player.board.board)) {
+        gameLoop();
+        document.querySelector(".winner-display").textContent = "You Lose.";
+        setTimeout(() => {document.querySelector(".winner-display").textContent = " "}, 3000)
+        return true;
 
-function displayWinner(winner) {
-    document.querySelector(".winner-display").textContent = `${winner}`
-}
-
-
-function isWinner(player, bot) {
-    if (player.board.allSunk(player.board.board, player)) {
-        //gameLoop();
-        return "player loss";
-    }
-    else if (bot.board.allSunk(bot.board.board)) {
-        //gameLoop();
-        return "bot loss";
+    }else if (botBoard.allSunk(botBoard.board)) {
+        gameLoop();
+        document.querySelector(".winner-display").textContent = "You Win!";
+        setTimeout(() => {document.querySelector(".winner-display").textContent = " "}, 3000)
+        return true;
     }else {
-        return false;
+        return false
     }
 }
