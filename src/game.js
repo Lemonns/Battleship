@@ -8,7 +8,6 @@ export function gameLoop() {
     let player = Player();
     let ai = Bot();
 
-    
     renderGrid("player-board-item" ,document.querySelector('.player'))
     renderGrid("ai-board-item", document.querySelector('.bot-ai'))
     addCoordinates(document.querySelectorAll('.player-board-item'), "player-coords")
