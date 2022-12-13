@@ -45,14 +45,14 @@ export const Bot = () => {
     }
 
     return {
-            board, 
-            turn, 
-            tryAttack,
-            setTurnFalse: function() {
-                this.turn = false;
-            },
-            setTurnTrue: function() {
-                this.turn = true;
-            }
+              board, 
+              turn, 
+              tryAttack,
+              setTurnFalse: function() {
+                  this.turn = false;
+              },
+              setTurnTrue: function() {
+                  this.turn = true;
+              }
             }
 }
